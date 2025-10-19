@@ -77,6 +77,13 @@ export default function Navigation() {
               Helpers
             </Link>
             
+            <Link 
+              href="/events/new" 
+              className="bg-yellow-500 dark:bg-yellow-600 text-gray-900 dark:text-white px-4 py-2 rounded-lg font-medium hover:bg-yellow-600 dark:hover:bg-yellow-500 transition-all shadow-lg hover:shadow-xl"
+            >
+              + List Event
+            </Link>
+            
             {/* Dark Mode Toggle */}
             {mounted && (
               <button

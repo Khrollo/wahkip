@@ -118,9 +118,11 @@ export default function EventCard({ e, match, onInteraction }: { e: any; match?:
       
       {/* Content */}
       <div className="p-4 space-y-3">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
-          {e.title}
-        </h3>
+        <a href={`/events/${e.id}`}>
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors cursor-pointer">
+            {e.title}
+          </h3>
+        </a>
         
         <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">

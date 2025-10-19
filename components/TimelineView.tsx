@@ -19,20 +19,20 @@ export default function TimelineView({ itinerary }: { itinerary: any }) {
       {slots.map((slot) => (
         <div key={slot.time} className="flex gap-4">
           <div className="w-20 flex-shrink-0 text-right">
-            <div className="text-2xl font-bold text-yellow-600">{slot.time}</div>
-            <div className="text-sm text-gray-600">{slot.label}</div>
+            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{slot.time}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">{slot.label}</div>
           </div>
-          <div className="flex-1 border-l-4 border-yellow-500 pl-6 pb-6">
+          <div className="flex-1 border-l-4 border-yellow-500 dark:border-yellow-600 pl-6 pb-6">
             {slot.activities.length > 0 ? (
               <ul className="space-y-2">
                 {slot.activities.map((activity, idx) => (
-                  <li key={idx} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                  <li key={idx} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-gray-900 dark:text-gray-100">
                     {activity}
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-gray-400 italic">No activities planned</p>
+              <p className="text-gray-400 dark:text-gray-600 italic">No activities planned</p>
             )}
           </div>
         </div>

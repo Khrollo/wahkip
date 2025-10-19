@@ -83,7 +83,9 @@ export default function HelpersPage() {
                   <div className="flex-1">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">{h.name}</h3>
+                        <Link href={`/helpers/${h.id}`}>
+                          <h3 className="text-xl font-bold text-gray-900 dark:text-white hover:text-yellow-600 dark:hover:text-yellow-400 transition-colors cursor-pointer">{h.name}</h3>
+                        </Link>
                         {h.verified && (
                           <span className="inline-flex items-center gap-1 text-xs font-medium text-yellow-800 dark:text-yellow-300 bg-yellow-100 dark:bg-yellow-950 px-2 py-1 rounded-full mt-1">
                             <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
