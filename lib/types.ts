@@ -8,6 +8,7 @@ export type EventRow = {
   tags: string[];
   city: string;
   image_url?: string | null;
+  capacity?: "low" | "medium" | "high" | null;
   created_at: string;
 };
 
