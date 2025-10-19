@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4.1-mini",
+        model: "gpt-4o-mini",
         temperature: 0.3,
         messages: [
           { role: "system", content: "Return only valid JSON. No prose." },
@@ -98,9 +98,19 @@ export async function POST(req: NextRequest) {
       }),
       signal: controller.signal,
     });
+    
+    if (!resp.ok) {
+      const error = await resp.json().catch(() => ({}));
+      throw new Error(`OpenAI API error: ${resp.status} - ${JSON.stringify(error)}`);
+    }
+    
     const raw = await resp.json();
     const txt = raw?.choices?.[0]?.message?.content;
-    return JSON.parse(txt);
+    if (!txt) throw new Error("No content in OpenAI response");
+    
+    // Clean up the response - remove markdown code blocks if present
+    const cleaned = txt.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+    return JSON.parse(cleaned);
   }
 
   async function tryGemini() {
@@ -112,21 +122,48 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({ contents: [{ parts: [{ text: content }]}] }),
       signal: controller.signal,
     });
+    
+    if (!resp.ok) {
+      const error = await resp.json().catch(() => ({}));
+      throw new Error(`Gemini API error: ${resp.status} - ${JSON.stringify(error)}`);
+    }
+    
     const raw = await resp.json();
     const txt = raw?.candidates?.[0]?.content?.parts?.[0]?.text;
-    return JSON.parse(txt);
+    if (!txt) throw new Error("No content in Gemini response");
+    
+    // Clean up the response - remove markdown code blocks if present
+    const cleaned = txt.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+    return JSON.parse(cleaned);
   }
 
   try {
     let parsed: any;
+    let errorLog = "";
+    
     try {
+      console.log("Attempting OpenAI...");
       parsed = await tryOpenAI();
-    } catch {
-      parsed = await tryGemini();
+      console.log("OpenAI success");
+    } catch (e: any) {
+      errorLog += `OpenAI: ${e.message}; `;
+      console.error("OpenAI failed:", e.message);
+      
+      try {
+        console.log("Attempting Gemini...");
+        parsed = await tryGemini();
+        console.log("Gemini success");
+      } catch (e2: any) {
+        errorLog += `Gemini: ${e2.message}`;
+        console.error("Gemini failed:", e2.message);
+        throw new Error(errorLog);
+      }
     }
+    
     clearTimeout(timer);
     itinerary = ItinerarySchema.parse(parsed);
-  } catch {
+  } catch (e: any) {
+    console.error("AI generation failed, using fallback:", e.message);
     // deterministic fallback
     const picks = (events || []).slice(0, 4).map((e:any)=> e.id);
     itinerary = {
