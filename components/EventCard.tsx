@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-export default function EventCard({ e, match, onInteraction }: { e: any; match?: number; onInteraction?: () => void }) {
+export default function EventCard({ e, match }: { e: any; match?: number }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [currentMatch, setCurrentMatch] = useState(match || 50);
@@ -36,11 +36,6 @@ export default function EventCard({ e, match, onInteraction }: { e: any; match?:
       // Update match score locally (increment by action weight)
       const increments: Record<string, number> = { view: 2, like: 5, save: 8 };
       setCurrentMatch(prev => Math.min(100, prev + increments[action]));
-
-      // Notify parent to refresh scores
-      if (onInteraction) {
-        onInteraction();
-      }
     } catch (e) {
       console.error("Failed to track interaction:", e);
     }
