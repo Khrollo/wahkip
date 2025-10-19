@@ -27,42 +27,21 @@ export default function HelpersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white dark:bg-black">
       {/* Navigation */}
-      <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center space-x-2">
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Wahkip
-              </span>
-            </Link>
-            <div className="flex space-x-6">
-              <Link href="/" className="text-gray-700 hover:text-blue-600 font-medium">
-                Home
-              </Link>
-              <Link href="/explore" className="text-gray-700 hover:text-blue-600 font-medium">
-                Explore
-              </Link>
-              <Link href="/helpers" className="text-blue-600 font-medium">
-                Helpers
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-yellow-50 dark:bg-black border-b border-yellow-200 dark:border-yellow-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">Wah Kip Helpers</h1>
-              <p className="text-lg text-gray-600">Find trusted local guides and assistants</p>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Wah Kip Helpers</h1>
+              <p className="text-lg text-gray-700 dark:text-gray-300">Find trusted local guides and assistants</p>
             </div>
             <Link
               href="/helpers/register"
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+              className="bg-yellow-500 dark:bg-yellow-600 text-gray-900 dark:text-white px-6 py-3 rounded-lg font-semibold hover:bg-yellow-600 dark:hover:bg-yellow-500 transition-all shadow-lg hover:shadow-xl"
             >
               Become a Helper
             </Link>
@@ -71,9 +50,9 @@ export default function HelpersPage() {
       </div>
 
       {/* Price Range Banner */}
-      <div className="bg-blue-50 border-b">
+      <div className="bg-yellow-100 dark:bg-yellow-950/30 border-b border-yellow-200 dark:border-yellow-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-2 text-blue-900">
+          <div className="flex items-center gap-2 text-yellow-900 dark:text-yellow-300">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
@@ -87,18 +66,18 @@ export default function HelpersPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {loading ? (
           <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-gray-600">Loading helpers...</p>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 dark:border-yellow-400"></div>
+            <p className="mt-4 text-gray-700 dark:text-gray-300">Loading helpers...</p>
           </div>
         ) : helpers.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {helpers.map((h: any) => (
-              <div key={h.id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6 space-y-4">
+              <div key={h.id} className="bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-xl transition-all border border-yellow-200 dark:border-yellow-900 p-6 space-y-4">
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="text-xl font-bold text-gray-900">{h.name}</h3>
                     {h.verified && (
-                      <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full mt-1">
+                      <span className="inline-flex items-center gap-1 text-xs font-medium text-yellow-800 dark:text-yellow-300 bg-yellow-100 dark:bg-yellow-950 px-2 py-1 rounded-full mt-1">
                         <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -117,14 +96,14 @@ export default function HelpersPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                     </svg>
                     <span>{h.city}</span>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M7 2a1 1 0 011 1v1h3a1 1 0 110 2H9.578a18.87 18.87 0 01-1.724 4.78c.29.354.596.696.914 1.026a1 1 0 11-1.44 1.389c-.188-.196-.373-.396-.554-.6a19.098 19.098 0 01-3.107 3.567 1 1 0 01-1.334-1.49 17.087 17.087 0 003.13-3.733 18.992 18.992 0 01-1.487-2.494 1 1 0 111.79-.89c.234.47.489.928.764 1.372.417-.934.752-1.913.997-2.927H3a1 1 0 110-2h3V3a1 1 0 011-1zm6 6a1 1 0 01.894.553l2.991 5.982a.869.869 0 01.02.037l.99 1.98a1 1 0 11-1.79.895L15.383 16h-4.764l-.724 1.447a1 1 0 11-1.788-.894l.99-1.98.019-.038 2.99-5.982A1 1 0 0113 8zm-1.382 6h2.764L12 11.236 11.618 14z" clipRule="evenodd" />
                     </svg>
@@ -133,20 +112,20 @@ export default function HelpersPage() {
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Skills</h4>
+                  <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">Skills</h4>
                   <div className="flex flex-wrap gap-2">
                     {(h.skills || []).map((skill: string) => (
-                      <span key={skill} className="text-xs px-3 py-1 bg-blue-50 text-blue-700 rounded-full font-medium">
+                      <span key={skill} className="text-xs px-3 py-1 bg-yellow-50 dark:bg-yellow-950 text-yellow-800 dark:text-yellow-300 rounded-full font-medium border border-yellow-200 dark:border-yellow-900">
                         {skill}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className="pt-4 border-t">
+                <div className="pt-4 border-t border-yellow-200 dark:border-yellow-900">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm text-gray-600">Rate</span>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-sm text-gray-700 dark:text-gray-300">Rate</span>
+                    <span className="text-lg font-bold text-gray-900 dark:text-white">
                       ${h.rate_min ?? "?"}-{h.rate_max ?? "?"}/hr
                     </span>
                   </div>
@@ -154,7 +133,7 @@ export default function HelpersPage() {
                     {h.phone && (
                       <a
                         href={`tel:${h.phone}`}
-                        className="flex-1 bg-blue-600 text-white text-center px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium"
+                        className="flex-1 bg-yellow-500 dark:bg-yellow-600 text-gray-900 dark:text-white text-center px-4 py-2 rounded-lg hover:bg-yellow-600 dark:hover:bg-yellow-500 transition-all font-medium shadow-lg hover:shadow-xl"
                       >
                         Call
                       </a>
@@ -162,7 +141,7 @@ export default function HelpersPage() {
                     {h.whatsapp && (
                       <a
                         href={`https://wa.me/${h.whatsapp.replace(/\D/g, "")}`}
-                        className="flex-1 bg-green-600 text-white text-center px-4 py-2 rounded-lg hover:bg-green-700 transition font-medium"
+                        className="flex-1 bg-green-600 dark:bg-green-700 text-white text-center px-4 py-2 rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-all font-medium shadow-lg hover:shadow-xl"
                       >
                         WhatsApp
                       </a>
@@ -174,11 +153,11 @@ export default function HelpersPage() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">No helpers available yet</p>
-            <p className="text-gray-500 mt-2">Be the first to register as a helper!</p>
+            <p className="text-gray-700 dark:text-gray-300 text-lg">No helpers available yet</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">Be the first to register as a helper!</p>
             <Link
               href="/helpers/register"
-              className="inline-block mt-4 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+              className="inline-block mt-4 bg-yellow-500 dark:bg-yellow-600 text-gray-900 dark:text-white px-6 py-3 rounded-lg font-semibold hover:bg-yellow-600 dark:hover:bg-yellow-500 transition-all shadow-lg hover:shadow-xl"
             >
               Register Now
             </Link>

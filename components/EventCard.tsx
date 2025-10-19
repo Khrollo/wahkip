@@ -33,9 +33,9 @@ export default function EventCard({ e }: { e: any }) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
+    <div className="bg-white dark:bg-black rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-yellow-200 dark:border-yellow-900">
       {/* Image */}
-      <div className="aspect-video bg-gradient-to-br from-blue-400 to-purple-500 relative overflow-hidden">
+      <div className="aspect-video bg-gradient-to-br from-yellow-400 to-yellow-600 dark:from-yellow-500 dark:to-yellow-700 relative overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
           <svg className="w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
@@ -43,7 +43,7 @@ export default function EventCard({ e }: { e: any }) {
         </div>
         {/* Capacity Badge */}
         {e.capacity && (
-          <div className="absolute top-2 right-2 flex items-center gap-1 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-2 py-1 rounded-full">
+          <div className="absolute top-2 right-2 flex items-center gap-1 bg-white/95 dark:bg-black/95 backdrop-blur-sm px-2 py-1 rounded-full border border-yellow-300 dark:border-yellow-800">
             <span className="text-xs">{getCapacityEmoji(e.capacity)}</span>
             <span className={`text-xs font-medium capitalize ${getCapacityColor(e.capacity)}`}>
               {e.capacity}
@@ -54,7 +54,7 @@ export default function EventCard({ e }: { e: any }) {
       
       {/* Content */}
       <div className="p-4 space-y-3">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
           {e.title}
         </h3>
         

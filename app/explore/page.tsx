@@ -41,15 +41,15 @@ export default function ExplorePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-white dark:bg-black">
       {/* Navigation */}
       <Navigation />
 
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <div className="bg-yellow-50 dark:bg-black border-b border-yellow-200 dark:border-yellow-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Explore Events</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">Discover local events and activities in your city</p>
+          <p className="text-lg text-gray-700 dark:text-gray-300">Discover local events and activities in your city</p>
         </div>
       </div>
 
@@ -63,11 +63,11 @@ export default function ExplorePage() {
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             onKeyPress={e => e.key === "Enter" && handleSearch()}
-            className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+            className="flex-1 border border-yellow-300 dark:border-yellow-800 rounded-lg px-4 py-2 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-colors"
           />
           <button
             onClick={handleSearch}
-            className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all shadow-lg hover:shadow-xl"
+            className="bg-yellow-500 dark:bg-yellow-600 text-gray-900 dark:text-white px-6 py-2 rounded-lg hover:bg-yellow-600 dark:hover:bg-yellow-500 transition-all shadow-lg hover:shadow-xl"
           >
             Search
           </button>
@@ -75,7 +75,7 @@ export default function ExplorePage() {
 
         {/* City Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">City</label>
+          <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">City</label>
           <div className="flex flex-wrap gap-2">
             {cities.map(city => (
               <button
@@ -83,8 +83,8 @@ export default function ExplorePage() {
                 onClick={() => setSelectedCity(city)}
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   selectedCity === city
-                    ? "bg-blue-600 dark:bg-blue-500 text-white shadow-lg"
-                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:border-blue-600 dark:hover:border-blue-500"
+                    ? "bg-yellow-500 dark:bg-yellow-600 text-gray-900 dark:text-white shadow-lg"
+                    : "bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 border border-yellow-300 dark:border-yellow-800 hover:border-yellow-500 dark:hover:border-yellow-600"
                 }`}
               >
                 {city}
@@ -95,14 +95,14 @@ export default function ExplorePage() {
 
         {/* Tag Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
+          <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Category</label>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setSelectedTag("")}
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 selectedTag === ""
-                  ? "bg-blue-600 dark:bg-blue-500 text-white shadow-lg"
-                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:border-blue-600 dark:hover:border-blue-500"
+                  ? "bg-yellow-500 dark:bg-yellow-600 text-gray-900 dark:text-white shadow-lg"
+                  : "bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 border border-yellow-300 dark:border-yellow-800 hover:border-yellow-500 dark:hover:border-yellow-600"
               }`}
             >
               All
@@ -113,8 +113,8 @@ export default function ExplorePage() {
                 onClick={() => setSelectedTag(tag)}
                 className={`px-4 py-2 rounded-lg font-medium capitalize transition-all ${
                   selectedTag === tag
-                    ? "bg-blue-600 dark:bg-blue-500 text-white shadow-lg"
-                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:border-blue-600 dark:hover:border-blue-500"
+                    ? "bg-yellow-500 dark:bg-yellow-600 text-gray-900 dark:text-white shadow-lg"
+                    : "bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 border border-yellow-300 dark:border-yellow-800 hover:border-yellow-500 dark:hover:border-yellow-600"
                 }`}
               >
                 {tag}
@@ -128,8 +128,8 @@ export default function ExplorePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {loading ? (
           <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading events...</p>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 dark:border-yellow-400"></div>
+            <p className="mt-4 text-gray-700 dark:text-gray-300">Loading events...</p>
           </div>
         ) : events.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -139,8 +139,8 @@ export default function ExplorePage() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-600 dark:text-gray-400 text-lg">No events found</p>
-            <p className="text-gray-500 dark:text-gray-500 mt-2">Try adjusting your filters or search query</p>
+            <p className="text-gray-700 dark:text-gray-300 text-lg">No events found</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">Try adjusting your filters or search query</p>
           </div>
         )}
       </div>
