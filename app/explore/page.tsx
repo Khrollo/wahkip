@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import EventCard from "../../components/EventCard";
 import Navigation from "../../components/Navigation";
 
@@ -13,11 +13,7 @@ export default function ExplorePage() {
   const cities = ["Kingston", "Montego Bay", "Ocho Rios", "Negril"];
   const tags = ["music", "food", "culture", "wellness", "sports", "nightlife", "family", "art"];
 
-  useEffect(() => {
-    loadEvents();
-  }, [selectedCity, selectedTag]);
-
-  async function loadEvents() {
+  const loadEvents = useCallback(async () => {
     setLoading(true);
     try {
       // Get or create session ID for personalization
@@ -42,14 +38,18 @@ export default function ExplorePage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [selectedCity, selectedTag, searchQuery]);
+
+  useEffect(() => {
+    loadEvents();
+  }, [loadEvents]);
 
   function handleSearch() {
     loadEvents();
   }
 
   function handleInteraction() {
-    // Refresh events to get updated match scores
+    // Refresh events to get updated match scores after user interaction
     setTimeout(() => {
       loadEvents();
     }, 500);
