@@ -6,7 +6,15 @@ export default function HorizontalRow({ title, query }: { title: string; query: 
   const [items, setItems] = useState<any[]>([]);
   useEffect(() => {
     let live = true;
-    fetch(`/api/events?${query}`).then(r=>r.json()).then(j=>{ if(live) setItems(j.items||[]) });
+    // Use absolute URL for client-side fetch
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+    fetch(`${baseUrl}/api/events?${query}`)
+      .then(r => r.json())
+      .then(j => { if(live) setItems(j.items||[]) })
+      .catch(err => {
+        console.error("Failed to fetch events:", err);
+        if(live) setItems([]);
+      });
     return () => { live = false; };
   }, [query]);
 
