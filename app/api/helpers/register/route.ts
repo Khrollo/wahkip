@@ -21,6 +21,7 @@ export async function POST(req: Request) {
     const { data, error } = await supa.from("helpers").insert({
       name: body.name,
       city: body.city,
+      photo_url: body.photo_url ?? null,
       langs: body.langs ?? [],
       skills: body.skills ?? [],
       rate_min: body.rate_min ?? null,

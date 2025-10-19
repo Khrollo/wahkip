@@ -1,5 +1,5 @@
 "use client";
-export default function EventCard({ e }: { e: any }) {
+export default function EventCard({ e, match }: { e: any; match?: number }) {
   const getTagColor = (tag: string) => {
     const colors: Record<string, string> = {
       music: "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300",
@@ -41,6 +41,12 @@ export default function EventCard({ e }: { e: any }) {
             <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
           </svg>
         </div>
+        {/* Match Score Badge */}
+        {match !== undefined && (
+          <div className="absolute top-2 left-2 bg-yellow-500/95 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-bold text-gray-900 shadow-lg">
+            {match}% Match
+          </div>
+        )}
         {/* Capacity Badge */}
         {e.capacity && (
           <div className="absolute top-2 right-2 flex items-center gap-1 bg-white/95 dark:bg-black/95 backdrop-blur-sm px-2 py-1 rounded-full border border-yellow-300 dark:border-yellow-800">

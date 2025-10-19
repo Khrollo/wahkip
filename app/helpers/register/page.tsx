@@ -6,6 +6,7 @@ export default function RegisterHelperPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [city, setCity] = useState("Kingston");
+  const [photoUrl, setPhotoUrl] = useState("");
   const [skills, setSkills] = useState("");
   const [langs, setLangs] = useState("en");
   const [rateMin, setRateMin] = useState("");
@@ -28,6 +29,7 @@ export default function RegisterHelperPage() {
         body: JSON.stringify({
           name,
           city,
+          photo_url: photoUrl || null,
           skills: skills.split(",").map(s => s.trim()).filter(Boolean),
           langs: langs.split(",").map(s => s.trim()).filter(Boolean),
           rate_min: rateMin ? parseInt(rateMin) : null,
@@ -81,6 +83,16 @@ export default function RegisterHelperPage() {
             value={city}
             onChange={e => setCity(e.target.value)}
             required
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Photo URL (optional)</label>
+          <input
+            type="url"
+            className="w-full border rounded px-3 py-2 mt-1"
+            value={photoUrl}
+            onChange={e => setPhotoUrl(e.target.value)}
+            placeholder="https://example.com/photo.jpg"
           />
         </div>
         <div>
