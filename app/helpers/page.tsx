@@ -1,9 +1,15 @@
-export const revalidate = 30;
+export const dynamic = "force-dynamic";
 
 export default async function HelpersPage() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const res = await fetch(`${baseUrl}/api/helpers/search?city=Kingston`, { next: { revalidate: 30 }});
-  const json = await res.json();
+  let json = { items: [], suggestedPriceRange: { min: 40, max: 120 } };
+  
+  try {
+    const res = await fetch(`${baseUrl}/api/helpers/search?city=Kingston`, { cache: "no-store" });
+    json = await res.json();
+  } catch (e) {
+    console.error("Failed to fetch helpers:", e);
+  }
   
   return (
     <main className="p-6 space-y-4">
