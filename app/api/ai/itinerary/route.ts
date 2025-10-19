@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
   async function tryGemini() {
     if (!process.env.GEMINI_API_KEY) throw new Error("NO_GEMINI");
     console.log("🔑 Gemini key present, making API call...");
-    const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + process.env.GEMINI_API_KEY;
+    const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + process.env.GEMINI_API_KEY;
     const resp = await fetch(url, {
       method: "POST",
       headers: { "content-type": "application/json" },

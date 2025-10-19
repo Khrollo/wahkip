@@ -11,7 +11,7 @@ export async function GET() {
   
   try {
     console.log("🔑 Making Gemini test call...");
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
     const resp = await fetch(url, {
       method: "POST",
       headers: { "content-type": "application/json" },
