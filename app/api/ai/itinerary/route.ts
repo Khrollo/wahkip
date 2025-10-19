@@ -11,34 +11,37 @@ function buildPrompt(city:string, date:string, events:any[], description:string)
     .map((e:any)=>`${e.id}|${e.date_start}|${e.title}|${(e.tags||[]).join("/")}`)
     .join("\n");
   return `
-You are Wahkip, an expert local travel planner that creates personalized day itineraries.
+You are Wahkip, an expert local travel planner specializing in creating personalized day itineraries for ${city}.
 
-City: ${city}
-Date: ${date}
-User's description: "${description}"
+USER REQUEST: "${description}"
+DATE: ${date}
 
-Available events (id|time|title|tags):
+AVAILABLE EVENTS (id|time|title|tags):
 ${list}
 
-Create a personalized itinerary based on what the user wants to experience. Match events that align with their description.
+TASK: Create a personalized itinerary that matches what the user wants to experience. Select specific events from the list above and organize them into a logical flow throughout the day.
 
-Return STRICT JSON matching:
+OUTPUT FORMAT (STRICT JSON ONLY):
 {
-  "morning": string[],
-  "midday": string[],
-  "afternoon": string[],
-  "evening": string[],
-  "transportNotes": string,
-  "costEstimate": { "low": number, "high": number, "currency": "USD" },
-  "picks": string[]
+  "morning": ["Activity 1", "Activity 2"],
+  "midday": ["Activity 3", "Activity 4"],
+  "afternoon": ["Activity 5"],
+  "evening": ["Activity 6"],
+  "transportNotes": "Practical transportation advice",
+  "costEstimate": { "low": 40, "high": 120, "currency": "USD" },
+  "picks": ["event-id-1", "event-id-2", "event-id-3"]
 }
 
-Rules:
-- Match events to what the user described they want to experience
-- Distribute items across morning/midday/afternoon/evening time slots
-- "picks" must be a subset of the event ids listed above
-- Be creative but practical
-- No extra commentary; ONLY JSON.
+RULES:
+1. "picks" MUST contain actual event IDs from the list above
+2. Morning activities should start around 8-10am
+3. Midday activities should be around 12-2pm
+4. Afternoon activities should be around 2-5pm
+5. Evening activities should be around 6pm+
+6. Match activities to the user's description
+7. Be specific - mention actual event names or locations
+8. Provide realistic cost estimates based on the activities
+9. Return ONLY valid JSON, no markdown, no explanations
 `.trim();
 }
 
@@ -137,43 +140,63 @@ export async function POST(req: NextRequest) {
     return JSON.parse(cleaned);
   }
 
-  try {
-    let parsed: any;
-    let errorLog = "";
-    
-    try {
-      console.log("Attempting OpenAI...");
-      parsed = await tryOpenAI();
-      console.log("OpenAI success");
-    } catch (e: any) {
-      errorLog += `OpenAI: ${e.message}; `;
-      console.error("OpenAI failed:", e.message);
-      
-      try {
-        console.log("Attempting Gemini...");
-        parsed = await tryGemini();
-        console.log("Gemini success");
-      } catch (e2: any) {
-        errorLog += `Gemini: ${e2.message}`;
-        console.error("Gemini failed:", e2.message);
-        throw new Error(errorLog);
-      }
-    }
-    
-    clearTimeout(timer);
-    itinerary = ItinerarySchema.parse(parsed);
+          try {
+            let parsed: any;
+            let errorLog = "";
+            
+            try {
+              console.log("🤖 Attempting OpenAI...");
+              console.log("Prompt length:", content.length);
+              parsed = await tryOpenAI();
+              console.log("✅ OpenAI success - Response:", JSON.stringify(parsed).substring(0, 200));
+            } catch (e: any) {
+              errorLog += `OpenAI: ${e.message}; `;
+              console.error("❌ OpenAI failed:", e.message);
+              
+              try {
+                console.log("🤖 Attempting Gemini...");
+                parsed = await tryGemini();
+                console.log("✅ Gemini success - Response:", JSON.stringify(parsed).substring(0, 200));
+              } catch (e2: any) {
+                errorLog += `Gemini: ${e2.message}`;
+                console.error("❌ Gemini failed:", e2.message);
+                throw new Error(errorLog);
+              }
+            }
+            
+            clearTimeout(timer);
+            itinerary = ItinerarySchema.parse(parsed);
+            console.log("✅ Itinerary validated and ready");
   } catch (e: any) {
     console.error("AI generation failed, using fallback:", e.message);
-    // deterministic fallback
-    const picks = (events || []).slice(0, 4).map((e:any)=> e.id);
+    // Smart fallback using actual events
+    const eventList = events || [];
+    const musicEvents = eventList.filter((e:any) => e.tags?.includes("music")).slice(0, 2);
+    const foodEvents = eventList.filter((e:any) => e.tags?.includes("food")).slice(0, 1);
+    const cultureEvents = eventList.filter((e:any) => e.tags?.some((t:string) => ["culture", "art", "heritage"].includes(t))).slice(0, 1);
+    
+    const allPicks = [...musicEvents, ...foodEvents, ...cultureEvents].map((e:any) => e.id);
+    
     itinerary = {
-      morning: ["Coffee at a local spot", "Stroll a safe central area"],
-      midday: ["Visit a cultural venue or market"],
-      afternoon: ["Top event from the list"],
-      evening: ["Dinner + nightlife cluster"],
-      transportNotes: "Use taxi between clusters; walk for close venues.",
-      costEstimate: { low: 40, high: 120, currency: "USD" },
-      picks,
+      morning: [
+        "Start your day with coffee at a local cafe",
+        musicEvents[0] ? musicEvents[0].title : "Explore the city center"
+      ],
+      midday: [
+        foodEvents[0] ? foodEvents[0].title : "Enjoy authentic local cuisine",
+        cultureEvents[0] ? cultureEvents[0].title : "Visit a cultural landmark"
+      ],
+      afternoon: [
+        musicEvents[1] ? musicEvents[1].title : "Experience local music scene",
+        "Relax and take in the atmosphere"
+      ],
+      evening: [
+        "Dinner at a recommended restaurant",
+        "Nightlife and entertainment"
+      ],
+      transportNotes: "Use local taxis or ride-sharing between venues. Most areas are walkable.",
+      costEstimate: { low: 50, high: 150, currency: "USD" },
+      picks: allPicks.length > 0 ? allPicks : eventList.slice(0, 4).map((e:any) => e.id),
     };
     usedFallback = true;
   }
