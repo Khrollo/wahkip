@@ -48,6 +48,13 @@ export default function ExplorePage() {
     loadEvents();
   }
 
+  function handleInteraction() {
+    // Refresh events to get updated match scores
+    setTimeout(() => {
+      loadEvents();
+    }, 500);
+  }
+
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Navigation */}
@@ -142,7 +149,7 @@ export default function ExplorePage() {
         ) : events.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {events.map(event => (
-              <EventCard key={event.id} e={event} match={event.match} />
+              <EventCard key={event.id} e={event} match={event.match} onInteraction={handleInteraction} />
             ))}
           </div>
         ) : (
