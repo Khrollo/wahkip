@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { ItinerarySchema } from "@/lib/ai";
 
 export const runtime = "nodejs";
-const TIMEOUT_MS = 20_000;
+const TIMEOUT_MS = 30_000; // Increased timeout for AI calls
 
 function buildPrompt(city:string, date:string, events:any[], description:string) {
   const list = (events || []).slice(0,12)
