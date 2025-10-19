@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import Navigation from "../../components/Navigation";
 
 export default function HelpersPage() {
   const [helpers, setHelpers] = useState<any[]>([]);
