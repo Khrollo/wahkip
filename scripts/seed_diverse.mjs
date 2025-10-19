@@ -1,10 +1,19 @@
 import { createClient } from '@supabase/supabase-js';
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+// Load .env.local file
+config({ path: resolve(process.cwd(), '.env.local') });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE;
 
+console.log('Supabase URL:', supabaseUrl ? 'Found' : 'Missing');
+console.log('Service Role Key:', supabaseKey ? 'Found' : 'Missing');
+
 if (!supabaseUrl || !supabaseKey) {
   console.error('Missing Supabase credentials');
+  console.error('Make sure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE are set in .env.local');
   process.exit(1);
 }
 
