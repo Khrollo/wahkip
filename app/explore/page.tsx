@@ -20,12 +20,20 @@ export default function ExplorePage() {
   async function loadEvents() {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ city: selectedCity });
+      // Get or create session ID for personalization
+      let sessionId = localStorage.getItem("wahkip_session_id");
+      if (!sessionId) {
+        sessionId = crypto.randomUUID();
+        localStorage.setItem("wahkip_session_id", sessionId);
+      }
+
+      const params = new URLSearchParams({ city: selectedCity, session_id: sessionId });
       if (selectedTag) params.append("tags", selectedTag);
       if (searchQuery) params.append("q", searchQuery);
       
+      // Use recommendations API for match scores
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
-      const res = await fetch(`${baseUrl}/api/events?${params.toString()}`);
+      const res = await fetch(`${baseUrl}/api/recommendations?${params.toString()}`);
       const json = await res.json();
       setEvents(json.items || []);
     } catch (e) {
@@ -134,7 +142,7 @@ export default function ExplorePage() {
         ) : events.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {events.map(event => (
-              <EventCard key={event.id} e={event} />
+              <EventCard key={event.id} e={event} match={event.match} />
             ))}
           </div>
         ) : (
