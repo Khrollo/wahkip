@@ -1,29 +1,48 @@
 import { z } from "zod";
 
+// Cost estimate can be either an object or a string (for backward compatibility)
+export const CostEstimateObj = z.object({
+  low: z.number(),
+  high: z.number(),
+  currency: z.string().default("USD"),
+});
+
 export const ItinerarySchema = z.object({
-  morning: z.array(z.string()).max(6),
-  midday: z.array(z.string()).max(6),
-  afternoon: z.array(z.string()).max(6),
-  evening: z.array(z.string()).max(6),
+  morning: z.array(z.string()),
+  midday: z.array(z.string()),
+  afternoon: z.array(z.string()),
+  evening: z.array(z.string()),
   transportNotes: z.string(),
-  costEstimate: z.object({
-    low: z.number().nonnegative(),
-    high: z.number().nonnegative(),
-    currency: z.string()
-  }),
-  picks: z.array(z.string()).max(12)
-});
-export type Itinerary = z.infer<typeof ItinerarySchema>;
-
-export const SafetySchema = z.object({
-  safetyTips: z.array(z.string()).max(12),
-  priceGuidance: z.object({ guidePerDayMin: z.number(), guidePerDayMax: z.number() }),
-  scamsToAvoid: z.array(z.string()).max(10)
+  costEstimate: z.union([CostEstimateObj, z.string()]),
+  picks: z.array(z.string()),
 });
 
-// small util
-export function ymd(date: string | Date) {
-  const d = new Date(date);
-  const pad = (n:number)=>String(n).padStart(2,"0");
-  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`;
+export type Itinerary = z.infer<typeof ItinerarySchema> & {
+  costEstimate: string; // Normalized to string
+};
+
+/**
+ * Strip markdown code fences from a string
+ */
+export function stripCodeFences(s: string): string {
+  return s.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+}
+
+/**
+ * Normalize itinerary costEstimate to a user-friendly string
+ */
+export function normalizeItinerary(itinerary: z.infer<typeof ItinerarySchema>): Itinerary {
+  let costEstimateStr: string;
+
+  if (typeof itinerary.costEstimate === "string") {
+    costEstimateStr = itinerary.costEstimate;
+  } else {
+    const { low, high, currency } = itinerary.costEstimate;
+    costEstimateStr = `$${low}-$${high} ${currency}`;
+  }
+
+  return {
+    ...itinerary,
+    costEstimate: costEstimateStr,
+  };
 }
