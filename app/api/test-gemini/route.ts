@@ -3,24 +3,20 @@ import { NextResponse } from "next/server";
 export const runtime = "nodejs";
 
 export async function GET() {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   
   if (!apiKey) {
     return NextResponse.json({ error: "No API key" });
   }
   
   try {
-    console.log("🔑 Making OpenAI test call...");
-    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+    console.log("🔑 Making Gemini test call...");
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const resp = await fetch(url, {
       method: "POST",
-      headers: {
-        authorization: `Bearer ${apiKey}`,
-        "content-type": "application/json",
-      },
+      headers: { "content-type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: "Say hello in JSON format: {\"message\": \"hello\"}" }],
-        temperature: 0.3,
+        contents: [{ parts: [{ text: "Say hello in JSON format: {\"message\": \"hello\"}" }] }],
       }),
     });
     
@@ -28,7 +24,7 @@ export async function GET() {
     
     if (!resp.ok) {
       const error = await resp.json().catch(() => ({}));
-      return NextResponse.json({ error: "OpenAI error", details: error, status: resp.status });
+      return NextResponse.json({ error: "Gemini error", details: error, status: resp.status });
     }
     
     const data = await resp.json();

@@ -85,15 +85,17 @@ export async function POST(req: NextRequest) {
 
   async function tryOpenAI() {
     if (!process.env.OPENAI_API_KEY) throw new Error("NO_OPENAI");
+    const apiKey = process.env.OPENAI_API_KEY.trim();
     console.log("🔑 OpenAI key present, making API call...");
+    console.log("🔑 Key prefix:", apiKey.substring(0, 10));
     const resp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        authorization: `Bearer ${apiKey}`,
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "gpt-3.5-turbo", // Using gpt-3.5-turbo for lower cost
         temperature: 0.3,
         messages: [
           { role: "system", content: "Return only valid JSON. No prose." },
