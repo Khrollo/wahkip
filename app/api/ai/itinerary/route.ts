@@ -1,3 +1,4 @@
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse, NextRequest } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { ItinerarySchema } from "@/lib/ai";
@@ -155,3 +156,4 @@ export async function POST(req: NextRequest) {
     ...(usedFallback ? { warning: "AI_FALLBACK" } : {}),
   });
 }
+

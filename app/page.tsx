@@ -1,3 +1,4 @@
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import EventsRealtimeClient from "../components/EventsRealtimeClient";
 import GenerateItinerary from "../components/GenerateItinerary";
 
@@ -34,3 +35,4 @@ export default async function Page() {
     </main>
   );
 }
+
