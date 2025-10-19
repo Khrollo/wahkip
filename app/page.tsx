@@ -1,7 +1,6 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
 import GenerateItinerary from "../components/GenerateItinerary";
-import ExploreRows from "../components/ExploreRows";
 import Navigation from "../components/Navigation";
 
 export const dynamic = "force-static";
@@ -67,10 +66,16 @@ export default async function Page() {
         <GenerateItinerary />
       </section>
 
-      {/* Explore Rows */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h2 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">Discover Events</h2>
-        <ExploreRows />
+      {/* CTA to Explore Page */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+        <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">Discover 60+ Local Events</h2>
+        <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">From music and food to wellness and sports - find your perfect day</p>
+        <Link 
+          href="/explore" 
+          className="inline-block bg-blue-600 dark:bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+        >
+          Explore All Events →
+        </Link>
       </section>
 
       {/* Footer */}
