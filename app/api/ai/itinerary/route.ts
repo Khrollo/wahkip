@@ -6,18 +6,21 @@ import { ItinerarySchema } from "@/lib/ai";
 export const runtime = "nodejs";
 const TIMEOUT_MS = 20_000;
 
-function buildPrompt(city:string, date:string, events:any[], interests:string[]) {
+function buildPrompt(city:string, date:string, events:any[], description:string) {
   const list = (events || []).slice(0,12)
     .map((e:any)=>`${e.id}|${e.date_start}|${e.title}|${(e.tags||[]).join("/")}`)
     .join("\n");
   return `
-You are Wahkip, a precise local planner.
+You are Wahkip, an expert local travel planner that creates personalized day itineraries.
+
 City: ${city}
 Date: ${date}
-User interests: ${interests.join(", ")}
+User's description: "${description}"
 
-Candidate events (id|time|title|tags):
+Available events (id|time|title|tags):
 ${list}
+
+Create a personalized itinerary based on what the user wants to experience. Match events that align with their description.
 
 Return STRICT JSON matching:
 {
@@ -31,9 +34,10 @@ Return STRICT JSON matching:
 }
 
 Rules:
-- Prefer events that match interests.
-- Distribute items across morning/midday/afternoon/evening.
-- "picks" must be a subset of the event ids listed above.
+- Match events to what the user described they want to experience
+- Distribute items across morning/midday/afternoon/evening time slots
+- "picks" must be a subset of the event ids listed above
+- Be creative but practical
 - No extra commentary; ONLY JSON.
 `.trim();
 }
@@ -42,7 +46,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(()=> ({} as any));
   const city: string | undefined = body.city;
   const date: string | undefined = body.date;
-  const interests: string[] = Array.isArray(body.interests) ? body.interests : [];
+  const description: string = body.description || "I want to experience local culture and activities";
 
   if (!city || !date) {
     return NextResponse.json({ error: "city and date required" }, { status: 400 });
@@ -74,7 +78,7 @@ export async function POST(req: NextRequest) {
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
-  const content = buildPrompt(city, date, events || [], interests);
+  const content = buildPrompt(city, date, events || [], description);
 
   async function tryOpenAI() {
     if (!process.env.OPENAI_API_KEY) throw new Error("NO_OPENAI");
@@ -140,7 +144,7 @@ export async function POST(req: NextRequest) {
   // Persist the request + itinerary
   const { data: reqRow, error: rErr } = await supa
     .from("itinerary_requests")
-    .insert({ city, date, interests })
+    .insert({ city, date, interests: [] })
     .select("id")
     .single();
   if (rErr) return NextResponse.json({ error: rErr.message }, { status: 400 });
