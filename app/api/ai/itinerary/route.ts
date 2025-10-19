@@ -133,10 +133,5 @@ export async function POST(req: NextRequest) {
       { error: "Internal server error", warning: "UNEXPECTED_ERROR" },
       { status: 500 }
     );
-  } finally {
-    // Always clear timeout
-    if (timer) {
-      clearTimeout(timer);
-    }
   }
 }
