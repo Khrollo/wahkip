@@ -3,7 +3,7 @@
 import { useState } from "react";
 import ItineraryTimeline from "./ItineraryTimeline";
 
-type Out = { itinerary: any; picks: string[]; warning?: string };
+type Out = { itinerary: any; picks: string[]; itinerary_id?: string; warning?: string };
 
 export default function GenerateItinerary() {
   const [city, setCity] = useState("Kingston");
@@ -52,6 +52,16 @@ export default function GenerateItinerary() {
           {out.warning === "AI_FALLBACK" && (
             <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
               AI unavailable or invalid JSON. Showing fallback.
+            </div>
+          )}
+          {out.itinerary_id && (
+            <div className="text-sm">
+              <a 
+                href={`/itinerary/${out.itinerary_id}`}
+                className="text-blue-600 hover:underline"
+              >
+                View & Share Itinerary →
+              </a>
             </div>
           )}
           <ItineraryTimeline data={out.itinerary}/>

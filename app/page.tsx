@@ -1,10 +1,22 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import EventsRealtimeClient from "../components/EventsRealtimeClient";
 import GenerateItinerary from "../components/GenerateItinerary";
+import ExploreRows from "../components/ExploreRows";
+
+export const dynamic = "force-static";
+export const revalidate = 60;
 
 async function getEvents() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"}/api/events?city=Kingston`, { cache: "no-store" });
-  return res.json();
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/events?city=Kingston`, { 
+      next: { revalidate: 60 } 
+    });
+    if (!res.ok) return { items: [], error: `events ${res.status}` };
+    return res.json();
+  } catch (e: any) {
+    return { items: [], error: e?.message || "fetch_failed" };
+  }
 }
 
 export default async function Page() {
@@ -16,22 +28,17 @@ export default async function Page() {
         <p className="text-sm text-gray-600">Local events & 1-day itineraries</p>
       </header>
 
+      {data?.error && (
+        <div className="text-sm text-amber-700 bg-amber-50 border border-amber-200 px-3 py-2 rounded">
+          Unable to load events ({data.error}). You can still generate an itinerary below.
+        </div>
+      )}
+
       <GenerateItinerary />
       <EventsRealtimeClient city="Kingston" />
 
-      <section className="space-y-2">
-        <h2 className="font-semibold">Upcoming in Kingston</h2>
-        <ul className="space-y-2">
-          {data.items?.map((e:any)=>(
-            <li key={e.id} className="border rounded p-3">
-              <div className="font-medium">{e.title}</div>
-              <div className="text-sm text-gray-500">{new Date(e.date_start).toLocaleString()}</div>
-              <div className="text-xs">{(e.tags||[]).join(", ")}</div>
-            </li>
-          ))}
-          {!data.items?.length && <li className="text-sm text-gray-500">No events yet.</li>}
-        </ul>
-      </section>
+      {/* Explore rows */}
+      <ExploreRows />
     </main>
   );
 }

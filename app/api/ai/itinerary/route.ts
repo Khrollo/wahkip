@@ -145,14 +145,17 @@ export async function POST(req: NextRequest) {
     .single();
   if (rErr) return NextResponse.json({ error: rErr.message }, { status: 400 });
 
-  const { error: iErr } = await supa
+  const { data: itinRow, error: iErr } = await supa
     .from("itineraries")
-    .insert({ request_id: reqRow!.id, json: itinerary, picks: itinerary.picks });
+    .insert({ request_id: reqRow!.id, json: itinerary, picks: itinerary.picks })
+    .select("id")
+    .single();
   if (iErr) return NextResponse.json({ error: iErr.message }, { status: 400 });
 
   return NextResponse.json({
     itinerary,
     picks: itinerary.picks,
+    itinerary_id: itinRow!.id,
     ...(usedFallback ? { warning: "AI_FALLBACK" } : {}),
   });
 }

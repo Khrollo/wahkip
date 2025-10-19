@@ -12,35 +12,44 @@ function normalizeISO(x: string | null, end=false) {
 }
 
 export async function GET(req: Request){
-  const url = new URL(req.url);
-  const city = url.searchParams.get("city") ?? "";
-  const fromRaw = url.searchParams.get("from");
-  const toRaw   = url.searchParams.get("to");
-  const from = normalizeISO(fromRaw, false);
-  const to   = normalizeISO(toRaw, true);
-  const tags = (url.searchParams.get("tags")||"").split(",").filter(Boolean);
-  const q    = url.searchParams.get("q") ?? "";
-  const page = Math.max(1, parseInt(url.searchParams.get("page")||"1"));
-  const limit = Math.min(50, Math.max(1, parseInt(url.searchParams.get("limit")||"20")));
-  const offset = (page-1)*limit;
+  try {
+    // Some runtimes may provide a relative req.url (e.g. "/api/events?...").
+    // Use the request Host header to build an absolute URL when necessary.
+    const host = req.headers.get("host") || "localhost:3000";
+    const base = `http://${host}`;
+    const url = new URL(req.url, base);
+    const city = url.searchParams.get("city") ?? "";
+    const fromRaw = url.searchParams.get("from");
+    const toRaw   = url.searchParams.get("to");
+    const from = normalizeISO(fromRaw, false);
+    const to   = normalizeISO(toRaw, true);
+    const tags = (url.searchParams.get("tags")||"").split(",").filter(Boolean);
+    const q    = url.searchParams.get("q") ?? "";
+    const page = Math.max(1, parseInt(url.searchParams.get("page")||"1"));
+    const limit = Math.min(50, Math.max(1, parseInt(url.searchParams.get("limit")||"20")));
+    const offset = (page-1)*limit;
 
-  const supa = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+    const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const SUPA_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!SUPA_URL || !SUPA_ANON) {
+      return NextResponse.json({ items: [], page: 1, total: 0, warning: "MISSING_SUPABASE_ENV" }, { status: 200 });
+    }
 
-  let query = supa.from("events").select("*", { count: "exact" });
-  if (city) query = query.eq("city", city);
-  if (from) query = query.gte("date_start", from);
-  if (to)   query = query.lte("date_start", to);
-  if (tags.length) query = query.contains("tags", tags);
-  if (q)    query = query.textSearch("title", q);
-  query = query.order("date_start", { ascending: true }).range(offset, offset+limit-1);
+    const supa = createClient(SUPA_URL, SUPA_ANON);
 
-  const { data, error, count } = await query;
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    let query = supa.from("events").select("*", { count: "exact" });
+    if (city) query = query.eq("city", city);
+    if (from) query = query.gte("date_start", from);
+    if (to)   query = query.lte("date_start", to);
+    if (tags.length) query = query.contains("tags", tags);
+    if (q)    query = query.textSearch("title", q);
+    query = query.order("date_start", { ascending: true }).range(offset, offset+limit-1);
 
-  return new NextResponse(JSON.stringify({ items: data||[], page, total: count||0 }), {
-    headers: { "content-type": "application/json", "cache-control":"no-store" }
-  });
+    const { data, error, count } = await query;
+    if (error) return NextResponse.json({ items: [], page: 1, total: 0, error: error.message }, { status: 200 });
+
+    return NextResponse.json({ items: data||[], page, total: count||0 }, { headers: { "cache-control":"no-store" }});
+  } catch (e:any) {
+    return NextResponse.json({ items: [], page: 1, total: 0, error: e?.message || "unknown" }, { status: 200 });
+  }
 }
