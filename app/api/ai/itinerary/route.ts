@@ -85,6 +85,7 @@ export async function POST(req: NextRequest) {
 
   async function tryOpenAI() {
     if (!process.env.OPENAI_API_KEY) throw new Error("NO_OPENAI");
+    console.log("🔑 OpenAI key present, making API call...");
     const resp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -102,14 +103,19 @@ export async function POST(req: NextRequest) {
       signal: controller.signal,
     });
     
+    console.log(`📡 OpenAI response status: ${resp.status}`);
+    
     if (!resp.ok) {
       const error = await resp.json().catch(() => ({}));
+      console.error(`❌ OpenAI error response:`, error);
       throw new Error(`OpenAI API error: ${resp.status} - ${JSON.stringify(error)}`);
     }
     
     const raw = await resp.json();
     const txt = raw?.choices?.[0]?.message?.content;
     if (!txt) throw new Error("No content in OpenAI response");
+    
+    console.log(`📝 OpenAI response text (first 100 chars): ${txt.substring(0, 100)}`);
     
     // Clean up the response - remove markdown code blocks if present
     const cleaned = txt.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
@@ -118,6 +124,7 @@ export async function POST(req: NextRequest) {
 
   async function tryGemini() {
     if (!process.env.GEMINI_API_KEY) throw new Error("NO_GEMINI");
+    console.log("🔑 Gemini key present, making API call...");
     const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + process.env.GEMINI_API_KEY;
     const resp = await fetch(url, {
       method: "POST",
@@ -126,14 +133,19 @@ export async function POST(req: NextRequest) {
       signal: controller.signal,
     });
     
+    console.log(`📡 Gemini response status: ${resp.status}`);
+    
     if (!resp.ok) {
       const error = await resp.json().catch(() => ({}));
+      console.error(`❌ Gemini error response:`, error);
       throw new Error(`Gemini API error: ${resp.status} - ${JSON.stringify(error)}`);
     }
     
     const raw = await resp.json();
     const txt = raw?.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!txt) throw new Error("No content in Gemini response");
+    
+    console.log(`📝 Gemini response text (first 100 chars): ${txt.substring(0, 100)}`);
     
     // Clean up the response - remove markdown code blocks if present
     const cleaned = txt.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
