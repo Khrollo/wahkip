@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-@theme {
-  --color-scheme: light dark;
-}
-
 html, body {
   height: 100%;
 }
