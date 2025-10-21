@@ -1,4 +1,5 @@
 import { stripCodeFences, ItinerarySchema, normalizeItinerary } from "./ai";
+import { getDemoItinerary } from "./demo_itineraries";
 
 const TIMEOUT_MS = 30_000;
 
@@ -10,8 +11,14 @@ export async function composeWithAI(payload: {
 }) {
   const { city, date, description, events } = payload;
 
+  // Use curated demo itineraries for hackathon presentation
   if (process.env.DEMO_MODE === "true") {
-    return { itinerary: buildDeterministicFallback(events), warning: "DEMO_MODE" };
+    const demoItinerary = getDemoItinerary(description);
+    // Merge with actual event picks if available
+    if (events.length > 0) {
+      demoItinerary.picks = events.slice(0, 4).map((e: any) => e.id);
+    }
+    return { itinerary: demoItinerary, warning: undefined };
   }
 
   const prompt = buildPrompt(city, date, events, description);

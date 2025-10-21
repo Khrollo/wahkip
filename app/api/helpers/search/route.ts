@@ -22,11 +22,16 @@ export async function GET(req: Request) {
     const { data, error } = await q.limit(20);
     if (error) return NextResponse.json({ items: [], suggestedPriceRange: { min: 40, max: 120 }, error: error.message });
 
-    const rates = (data || []).map((h: any) => [h.rate_min || 0, h.rate_max || 0]);
+    // Deduplicate by ID to ensure distinct helpers
+    const uniqueHelpers = Array.from(
+      new Map((data || []).map((h: any) => [h.id, h])).values()
+    );
+
+    const rates = uniqueHelpers.map((h: any) => [h.rate_min || 0, h.rate_max || 0]);
     const min = Math.min(...rates.map(r => r[0]).filter(n => n > 0)) || 40;
     const max = Math.max(...rates.map(r => r[1]).filter(n => n > 0)) || 120;
 
-    return NextResponse.json({ items: data || [], suggestedPriceRange: { min, max } });
+    return NextResponse.json({ items: uniqueHelpers, suggestedPriceRange: { min, max } });
   } catch (e: any) {
     return NextResponse.json({ items: [], suggestedPriceRange: { min: 40, max: 120 }, error: e?.message });
   }

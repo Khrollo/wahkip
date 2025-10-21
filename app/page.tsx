@@ -82,7 +82,21 @@ export default async function Page() {
       <footer className="border-t border-yellow-200 dark:border-yellow-900 bg-yellow-50 dark:bg-black py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-700 dark:text-gray-300">
           <p className="font-semibold text-gray-900 dark:text-white mb-2">Wahkip</p>
-          <p className="text-sm">Your local adventure starts here</p>
+          <p className="text-sm mb-6">Your local adventure starts here</p>
+          
+          {/* Blue Mountain Engineering */}
+          <div className="flex items-center justify-center gap-2 text-gray-600 dark:text-gray-400">
+            <span className="text-xs">Engineered by</span>
+            <div className="flex items-center gap-1.5">
+              <svg viewBox="0 0 40 40" className="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 28 L12 16 L16 28 Z" fill="currentColor" className="text-blue-600 dark:text-blue-400" />
+                <path d="M14 28 L20 8 L26 28 Z" fill="currentColor" className="text-blue-700 dark:text-blue-300" />
+                <path d="M24 28 L28 18 L32 28 Z" fill="currentColor" className="text-blue-600 dark:text-blue-400" />
+                <line x1="6" y1="28" x2="34" y2="28" stroke="currentColor" strokeWidth="1.5" className="text-blue-800 dark:text-blue-500" />
+              </svg>
+              <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">Blue Mountain</span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
